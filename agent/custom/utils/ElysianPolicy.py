@@ -2,6 +2,7 @@
 import re
 from dataclasses import dataclass, field, asdict
 from .CharacterProfiles import CHARACTER_PROFILES
+from .ZhConv import to_simplified
 
 GATE_NAMES = {1: "鏖灭", 2: "真我", 3: "空梦", 10: "商店", 11: "戒律", 12: "螺旋", 13: "商店", 14: "天慧", 15: "繁星", 17: "无限", 18: "刹那", 19: "黄金", 20: "救世", 21: "旭光", 22: "浮生", 23: "首领"}
 DISABLABLE_FAMILIES = {"鏖灭"}
@@ -69,7 +70,12 @@ class RunState:
 
 
 def normalize(text):
-    return re.sub(r"\s+", "", text).replace("麈灭", "鏖灭").replace("鏖天", "鏖灭").replace("塵灭", "鏖灭")
+    simplified = to_simplified(re.sub(r"\s+", "", text))
+    return (simplified
+            .replace("麈灭", "鏖灭")
+            .replace("鏖天", "鏖灭")
+            .replace("塵灭", "鏖灭")
+            .replace("尘灭", "鏖灭"))
 
 
 def compare_key(text):

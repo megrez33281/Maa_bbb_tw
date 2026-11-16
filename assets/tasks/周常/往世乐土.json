@@ -256,6 +256,24 @@
                     }
                 },
                 {
+                    "name": "往世乐土-深层序列-真我·人之律者-初绽+初醒",
+                    "label": "真我·人之律者-大招流（初绽+初醒）",
+                    "pipeline_override": {
+                        "乐土关内-角色配置": {
+                            "action": {
+                                "type": "Custom",
+                                "param": {
+                                    "custom_action": "ElysianConfigure",
+                                    "custom_action_param": {
+                                        "character": "真我·人之律者",
+                                        "variant": "elysian_czcx"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
                     "name": "往世乐土-深层序列-女武神·重机-底火",
                     "label": "女武神·重机-非星环流（底火）",
                     "pipeline_override": {

@@ -1,0 +1,9 @@
+{
+    "繁中-每周分享-关闭Facebook弹窗": {
+        "action": "ClickKey",
+        "key": [
+            4
+        ],
+        "post_delay": 1500
+    }
+}

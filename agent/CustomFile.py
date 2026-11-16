@@ -2,6 +2,7 @@ from maa.agent.agent_server import AgentServer
 from agent.custom.action.Count import Count
 from agent.custom.action.OverridePipe import OverridePipe
 from agent.custom.action.IDFRole import RecognitionRole
+from agent.custom.action.AbyssTeamSelect import AbyssTeamSelect
 
 from agent.custom.action.Notice import Notice
 from agent.custom.action.StartGameByPackage import StartGameByPackage
@@ -167,6 +168,13 @@ class AffixRerollV2_Cls(AffixRerollV2):
 @AgentServer.custom_action("AffixRerollV2ParamHolder")
 # 界面参数的载体节点（空动作）
 class AffixRerollV2ParamHolder_Cls(AffixRerollV2ParamHolder):
+    def __init__(self):
+        super().__init__()
+        print(f"{self.__class__.__name__} 初始化")
+
+
+@AgentServer.custom_action("AbyssTeamSelect")
+class AbyssTeamSelect_Cls(AbyssTeamSelect):
     def __init__(self):
         super().__init__()
         print(f"{self.__class__.__name__} 初始化")

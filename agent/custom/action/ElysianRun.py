@@ -103,7 +103,7 @@ class ElysianRun(CustomAction):
         不能单独作为必要判据，否则燃血角色会把战斗画面判成非战斗。
         禁用态模板命中 = 战后/脱战；减负层选完刻印后直接出传送门，按导航处理。
         """
-        if "抵达层数-减负层" in self.text:
+        if "抵达层数-减负层" in self.text or "抵达层数-精简层" in self.text:
             return False
         # 「战斗中」模板在桌面端同样能命中（实测 0.94），命中即可确认还在战斗，
         # 不必再依赖血量 OCR——血量文本在低血量/特效遮挡时会读成没有斜杠的串。
@@ -226,7 +226,7 @@ class ElysianRun(CustomAction):
     def sync_pause(self):
         if self.final_exit:
             self.phase("结算深层序列", "已按要求进入任选英桀门，现在退出结算")
-            if not self.click_text('放弃并结算',[200,570,500,150],.8):
+            if not self.click_text('放弃并结算|直接结算',[200,570,500,150],.8):
                 self.click_text('^战况报告$',[0,170,210,110])
             return
         self.phase("检查本局", "读取角色与已获刻印")
@@ -239,7 +239,7 @@ class ElysianRun(CustomAction):
             else:
                 self.click_text("^状态列表$", [0, 320, 210, 380]); return
         if not self.state.build_verified:
-            if self.state.floor==0:
+            if self.state.floor==0 and not getattr(self, "saw_sweep_hud", False):
                 # 出生动画期间还没弹出初始专属；先恢复，等实际楼层/选刻印出现。
                 if not self.click_text('^继续战斗$',[800,570,480,150],.6):self.click_text('^战况报告$',[0,170,210,110])
                 return
@@ -267,7 +267,7 @@ class ElysianRun(CustomAction):
                     self.click_text("^战况报告$", [0, 170, 210, 110])
                 return
             signature = normalize("".join(i["text"] for i in self.items if i["box"][0] > 220))
-            if signature != self.build_signature and self.build_scrolls < 6:
+            if signature != self.build_signature and self.build_scrolls < 15:
                 self.build_signature = signature
                 self.swipe(1100, 604, 1100, 290, 300); self.build_scrolls += 1; return
             if self.state.has(required):
@@ -288,7 +288,7 @@ class ElysianRun(CustomAction):
                 raise RunHalt("刻印选择页识别不到任何卡片，已停止并保存现场")
             self.choice_empty += 1
             self.phase("刻印页无候选", f"识别不到卡片，重置后重试（{self.choice_empty}/3）")
-            self.click_text("重置刻印", [600, 630, 420, 90], .8)
+            self.click_text("重置刻印|刷新刻印", [600, 630, 420, 90], .8)
             return
         self.choice_empty = 0
         family_match = re.search(r"[「【\[]?(真我|黄金|鏖灭|空梦|螺旋|天慧|浮生|戒律|无限|旭光|繁星|刹那|救世)[」】\]]?的刻印", self.text)
@@ -297,15 +297,24 @@ class ElysianRun(CustomAction):
         if signature == self.choice_signature and time.monotonic()-self.choice_at < 2: return
         exclusive = family == "真我" or any("祝福" in r["text"] for r in rows)
         required = self.required_signet()
-        if exclusive and not self.state.has(required) and not any(required in r["text"] for r in rows):
-            if self.exclusive_refresh >= 8: raise RunHalt(f"初始专属刷新 8 次仍未找到{required}")
-            if self.click_text("重置刻印", [600, 630, 420, 90], .8):
-                self.exclusive_refresh += 1
-                self.phase("初始专属", f"寻找{required}，刷新 {self.exclusive_refresh}/8")
-            return
+        plan_excl = self.profile().get("signet_plan", {}).get("exclusive", [])
+        target_excl = (
+            next((n for n in plan_excl if not self.state.has(n)), required)
+            if (exclusive and self.state.floor <= 1)
+            else required
+        )
+        if exclusive and target_excl and not self.state.has(target_excl) and not any(target_excl in r["text"] for r in rows):
+            if self.exclusive_refresh >= 12:
+                if not self.state.has(required):
+                    raise RunHalt(f"初始专属刷新 12 次仍未找到{target_excl}")
+            else:
+                if self.click_text("重置刻印|刷新刻印", [600, 630, 420, 90], .8):
+                    self.exclusive_refresh += 1
+                    self.phase("初始专属", f"寻找{target_excl}，刷新 {self.exclusive_refresh}/12")
+                return
         allowed_rows = [row for row in rows if not signet_disabled(row["text"], self.state, family)]
         if not allowed_rows:
-            if self.exclusive_refresh < 8 and self.click_text("重置刻印", [600, 630, 420, 90], .8):
+            if self.exclusive_refresh < 8 and self.click_text("重置刻印|刷新刻印", [600, 630, 420, 90], .8):
                 self.exclusive_refresh += 1
                 self.phase("刷新禁用刻印", "当前仅有禁用刻印，尝试重置")
                 return
@@ -335,6 +344,7 @@ class ElysianRun(CustomAction):
         if signature == current and "选择刻印" in self.text: return
         self.state.record(text, family)
         if self.required_signet() in text: self.state.build_verified = True
+        self.exclusive_refresh = 0
         self.pending_signet = None
         self.phase("已获得刻印", normalize(text)[:48])
 
@@ -451,9 +461,10 @@ class ElysianRun(CustomAction):
             self.target = gate
             self.state.target = GATE_NAMES[gate["cls_index"]]
             box = gate["box"]; cx=box[0]+box[2]/2
-            if abs(cx-640) > 100:
+            if abs(cx-640) > 120:
                 self.phase("对准传送门", self.state.target)
-                delta=max(-90,min(90,int((cx-640)*.25)))
+                mag = max(40, min(90, abs(int((cx-640)*.28))))
+                delta = mag if cx > 640 else -mag
                 self.swipe(760,301,760+delta,301,200)
                 return
             self.phase("靠近传送门", self.state.target + f"，第 {self.nav_steps+1} 步")
@@ -462,12 +473,18 @@ class ElysianRun(CustomAction):
             self.stop_event.wait(.65)
         else:
             self.lost_frames += 1
-            if self.target and self.target["box"][2] >= 100 and self.lost_frames == 1:
+            if self.target and self.target.get("cls_index") not in (10, 13) and self.target["box"][2] >= 100 and self.lost_frames == 1:
                 # 已贴近的门突然消失，可能越过交互范围；禁止继续前冲。
                 self.phase("复核近门位置", "近门目标消失，短步后退后重新观察")
                 self.motion.walk(self.context, 0, .25, dy=76)
                 return
-            frames = [r for r in gates if r.get("cls_index") in (8,24) and r.get("score",0)>=.3]
+            # 逝火的终墓顶部的发光岩柱裂缝会被 YOLO 误判为贴顶部的 ce_door（y < 80），不能当作门框靠近。
+            frames = [
+                r for r in gates
+                if r.get("cls_index") in (8, 24)
+                and r.get("score", 0) >= .3
+                and not (r.get("cls_index") == 24 and r["box"][1] < 80)
+            ]
             blocked_visible = any(GATE_NAMES.get(g.get('cls_index')) in self.state.disabled_families
                                   and g.get('score', 0) >= .55 for g in detected_gates)
             # 商店遮挡：门就在商店后面，纯转视角永远看不到门框。
@@ -502,10 +519,13 @@ class ElysianRun(CustomAction):
             if frames and not visible:
                 self.frame_target=frames;self.frame_lost=0
                 if self.nav_steps and self.nav_steps % 4 == 0:self.save(True)
-                cx=sum(r["box"][0]+r["box"][2]/2 for r in frames)/len(frames)
+                best_frame=min(frames,key=lambda r:abs(r["box"][0]+r["box"][2]/2-640))
+                cx=best_frame["box"][0]+best_frame["box"][2]/2
                 self.phase("靠近门框", "展开后再识别刻印体系")
-                if abs(cx-640)>100:
-                    self.swipe(760,301,760+max(-90,min(90,int((cx-640)*.25))),301,200)
+                if abs(cx-640)>120:
+                    mag=max(40,min(90,abs(int((cx-640)*.28))))
+                    delta=mag if cx>640 else -mag
+                    self.swipe(760,301,760+delta,301,200)
                     return
                 self.motion.walk(self.context,max(-65,min(65,int((cx-640)*.35))))
                 self.nav_steps+=1
@@ -775,11 +795,16 @@ class ElysianRun(CustomAction):
         if "跳过剧情" in self.text and "确认" in self.text:
             self.frontend()
             return
+        # 结算页弹出「锈蚀之徽掉落已达上限」时底部的「点击空白处关闭界面」仍可被 OCR 读到，必须先点弹窗确定。
+        if "锈蚀之徽" in self.text and "上限" in self.text:
+            self.frontend()
+            return
         if '点击空白处关闭界面' in self.text:
-            if self.settlement_requested and '挑战成功' in self.text and self.find(r'^18000$', [1000, 180, 280, 150]):
+            score_card = self.find(r'^(18000|20000)$', [1000, 180, 280, 150])
+            if self.settlement_requested and ('挑战成功' in self.text or '挑战结束' in self.text) and score_card:
                 self.settlement_result_seen = True
                 self.checkpoint.write_text(json.dumps({'requested_at':time.time(), 'state':self.state.to_dict(), 'result_seen':True},ensure_ascii=False),encoding='utf-8')
-                self.phase('确认挑战成功', '已核对成绩页：18000 分')
+                self.phase('确认挑战成功', f'已核对成绩页：{normalize(score_card["text"])} 分')
             else:
                 if self.settlement_requested and not self.settlement_result_seen and self.settlement_animation_waits < 3:
                     self.settlement_animation_waits += 1
@@ -827,11 +852,11 @@ class ElysianRun(CustomAction):
             raise RunHalt('已完成深层序列并按指定方式退出结算')
         if self.frontend():
             self.progress_at = time.monotonic(); return
-        if self.final_exit and '是否放弃并结算' in self.text and self.find('^放弃$',[300,430,340,130]):
+        if self.final_exit and ('是否放弃并结算' in self.text or '是否直接结算' in self.text) and self.find('^(放弃|确定)$',[300,430,340,130]):
             self.phase("确认结算")
             self.settlement_requested=True
             self.checkpoint.write_text(json.dumps({'requested_at':time.time(),'state':self.state.to_dict()},ensure_ascii=False),encoding='utf-8')
-            self.click_text('^放弃$',[300,430,340,130],1)
+            self.click_text('^(放弃|确定)$',[300,430,340,130],1)
             return
         if self.find('^购买刻印$',[0,60,220,90]) and '升级刻印' in self.text:
             self.shop();return
@@ -856,8 +881,9 @@ class ElysianRun(CustomAction):
                     and not self.final_exit):
                 self.phase("等待初始刻印", "等待出生动画和初始专属选择")
                 return
-            if (self.state.floor == 0 or (self.fresh_run and self.state.floor == 1
-                    and not self.state.build_verified)) and not self.final_exit:
+            if not self.state.build_verified and (
+                self.state.floor == 0 or (self.fresh_run and self.state.floor == 1)
+            ) and not self.final_exit:
                 self.phase('等待初始刻印','等待出生动画与初始专属选择')
                 if time.monotonic()-self.floor_since>45:raise RunHalt('出生后 45 秒仍未出现初始刻印，现场已保存')
                 return
@@ -900,6 +926,7 @@ class ElysianRun(CustomAction):
         # 关卡 HUD 存在但不在战斗（减负层待命、刚选完刻印）：
         # 先做一次角色/刻印校验（暂停菜单），确认无误再去寻路，避免带错配置跑图。
         if "抵达层数" in self.text:
+            self.saw_sweep_hud = True
             self.progress_at = time.monotonic()
             if not self.state.role_verified or not self.state.build_verified:
                 self.phase("检查本局", f"选完刻印先核对角色与{self.required_signet()}")

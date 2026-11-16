@@ -1,0 +1,64 @@
+{
+    "启动并进入游戏": {
+        "package": "com.miHoYo.bh3tw",
+        "next": [
+            "[JumpBack]游戏需在客户端进行更新",
+            "[JumpBack]舰长~真的要退出游戏吗-否",
+            "[JumpBack]出现了！邪恶包菜头！",
+            "[JumpBack]请舰长注意休息",
+            "[JumpBack]进入游戏-超弦空间结算",
+            "[JumpBack]相关资源下载-取消",
+            "成功进入游戏主菜单",
+            "[JumpBack]所有资源已下载完成",
+            "[JumpBack]热更新-数据已更新-官方热补丁",
+            "[JumpBack]特殊返回返回识别集",
+            "[JumpBack]点击返回主菜单",
+            "[JumpBack]离开火星确认",
+            "[JumpBack]离开火星",
+            "[JumpBack]误触-不进入第二部确认",
+            "[JumpBack]今日不再提示是否跳过剧情-单次确认动作",
+            "[JumpBack]点击叉叉",
+            "[JumpBack]进入游戏-月卡领取-15天奖励",
+            "[JumpBack]启动游戏-领取月卡",
+            "[JumpBack]领取一切确认",
+            "[JumpBack]领取一切",
+            "[JumpBack]新春聊天室-退出",
+            "[JumpBack]点击空白位置关闭-启动游戏特别处理版",
+            "[JumpBack]领取签到奖励",
+            "[JumpBack]月份每日登录奖励",
+            "[JumpBack]点击领取签到奖励",
+            "[JumpBack]点击任意位置进入游戏",
+            "[JumpBack]所有资源已下载完毕",
+            "[JumpBack]着色器编译中",
+            "[JumpBack]点击左上角返回",
+            "[JumpBack]点击左上角返回_文字",
+            "[JumpBack]资源下载",
+            "[JumpBack]今日不再跳过剧情确认",
+            "[JumpBack]剧情跳过辅助点击-文字",
+            "[JumpBack]剧情跳过辅助点击-图片",
+            "[JumpBack]剧情辅助点击-点击空白处跳过剧情",
+            "[JumpBack]误触进入手机界面",
+            "[JumpBack]误触进入聊天频道界面",
+            "[JumpBack]网络连接失败-重试",
+            "[JumpBack]网络连接错误-重试",
+            "[JumpBack]预告网页处理-点击关闭",
+            "[JumpBack]预告网页处理-点击复制确认",
+            "[JumpBack]预告网页处理-点击复制",
+            "[JumpBack]预告网页处理-点击复制点击叉叉",
+            "[JumpBack]黑屏计数",
+            "[JumpBack]模拟器包名游戏启动",
+            "[JumpBack]空任务"
+        ]
+    },
+    "模拟器包名游戏启动": {
+        "action": "StartApp",
+        "package": "com.miHoYo.bh3tw"
+    },
+    "打开游戏": {
+        "action": "StartApp",
+        "package": "com.miHoYo.bh3tw"
+    },
+    "渠道服专用广告处理集合": {
+        "enabled": false
+    }
+}

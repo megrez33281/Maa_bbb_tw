@@ -156,6 +156,28 @@
         "timeout": 3000,
         "next": ["角色战斗-真我·人之律者-初见+初念"]
     },
+    "角色战斗-真我·人之律者-初绽+初醒": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "真我·人之律者",
+                    "variant": "elysian_czcx",
+                    "confirmed_signet": "初绽"
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": ["角色战斗-真我·人之律者-初绽+初醒"]
+    },
     "角色战斗-女武神·重机-底火": {
         "recognition": "OCR",
         "roi": [296, 620, 165, 42],

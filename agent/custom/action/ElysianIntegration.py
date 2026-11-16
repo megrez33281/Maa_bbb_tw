@@ -257,7 +257,7 @@ class ElysianInStage(CustomRecognition):
             # 用页面标题作为主判据，仍要求同时出现真我/祝福/专属内容，
             # 避免把普通战斗或战前配置页误判成刻印页。
             initial_button = any(
-                "选择刻印" in r["text"] and r["box"][0] > 850 and r["box"][1] > 560
+                "选择刻印" in normalize(r["text"]) and r["box"][0] > 850 and r["box"][1] > 560
                 for r in rows
             )
             initial_title = any(
@@ -270,13 +270,19 @@ class ElysianInStage(CustomRecognition):
             # 对话仍属于入场流程，接管器应先点右上角跳过，再等待
             # 初始专属刻印页面，而不是把这次识别当成失败退出。
             dialogue = (
-                any("跳过" in r["text"] for r in rows if r["box"][1] < 100)
+                any("跳过" in normalize(r["text"]) for r in rows if r["box"][1] < 100)
                 and "历史" in text
                 and ("爱莉希雅" in text or "开场白" in text)
             )
             floor = read_floor(rows)
-            hud = context.run_recognition("角色战斗-生命HUD", argv.image) if floor else None
-            resumed = bool(floor and hud and hud.hit)
+            sweep_layer = "抵达层数-减负层" in text or "抵达层数-精简层" in text
+            hud = context.run_recognition("角色战斗-生命HUD", argv.image) if (floor or sweep_layer) else None
+            hp_ocr_fallback = any(
+                250 <= r["box"][0] <= 480 and 600 <= r["box"][1] <= 680
+                and re.search(r"[1-9]\d{2,}[/1|lI][1-9]\d{2,}", normalize(r["text"]))
+                for r in rows
+            )
+            resumed = bool((floor or sweep_layer) and ((hud and hud.hit) or hp_ocr_fallback))
             paused = all(word in text for word in ("战况报告", "状态列表", "往世乐土"))
             if initial or resumed or paused or dialogue:
                 scene = "initial_signet" if initial else "dialogue" if dialogue else "resume"

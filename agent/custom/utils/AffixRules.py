@@ -26,6 +26,7 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence, Tuple
+from .ZhConv import to_simplified
 
 # --------------------------------------------------------------------------
 # 1. 词缀知识表（游戏内词缀种类有限，全部在这里维护）
@@ -148,7 +149,7 @@ def normalize_text(text: object) -> str:
         return ""
     s = unicodedata.normalize("NFKC", str(text))
     s = re.sub(r"\s+", "", s)
-    return s
+    return to_simplified(s)
 
 
 def extract_attack_value(text: str) -> Optional[float]:

@@ -95,6 +95,18 @@
             ]
         },
         {
+            "name": "繁中服",
+            "description": "繁中客戶端（台港澳服 com.miHoYo.bh3tw），疊加 resource_tw 繁中覆蓋包",
+            "controller": [
+                "安卓端"
+            ],
+            "path": [
+                "./resource/base",
+                "./resource/resource_tw",
+                "./resource/resource_tw_android"
+            ]
+        },
+        {
             "name": "B服",
             "controller": [
                 "安卓端"

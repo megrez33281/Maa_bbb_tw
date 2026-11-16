@@ -1,0 +1,38 @@
+{
+  "character": "通用角色",
+  "variant": "abyss_carry",
+  "profile": {
+    "mode": "abyss",
+    "requires_signet": "",
+    "opening": [],
+    "switch_cycle": [],
+    "switch_interval_s": 10,
+    "cycle": ["weapon", "attack", "attack", "attack", "attack"],
+    "interval_ms": 120,
+    "support_interval_s": 30,
+    "elysian_support": false,
+    "stage_skill": true,
+    "stage_skill_interval_s": 8,
+    "ultimate": true,
+    "ultimate_interval_s": 12,
+    "star_ring": true,
+    "star_ring_interval_s": 15,
+    "dodge": false,
+    "target_lock": false,
+    "movement": false,
+    "branch": true,
+    "branch_interval_s": 4.0,
+    "branch_hold_ms": 700,
+    "hold_attack": false,
+    "source": "超弦空间通用单C站场模板（武器+普攻+蓄力分支+大招+星之环）"
+  },
+  "touch_actions": {
+    "attack": [1173, 615],
+    "weapon": [1045, 512],
+    "switch_1": [1208, 147],
+    "switch_2": [1203, 285],
+    "ultimate": [1184, 466],
+    "star_ring": [914, 565],
+    "dodge": [1028, 649]
+  }
+}

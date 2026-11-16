@@ -11,7 +11,7 @@
             "pipeline_override": {
                 "繁中助手-打开界面": {
                     "action": "Command",
-                    "exec": "assets/resource/resource_tw/tools/繁中助手.bat",
+                    "exec": "resource/resource_tw/tools/繁中助手.bat",
                     "args": [],
                     "detach": true
                 }
@@ -28,7 +28,7 @@
             "pipeline_override": {
                 "繁中助手-重建覆盖包": {
                     "action": "Command",
-                    "exec": "assets/resource/resource_tw/tools/繁中助手.bat",
+                    "exec": "resource/resource_tw/tools/繁中助手.bat",
                     "args": [],
                     "detach": true
                 }
