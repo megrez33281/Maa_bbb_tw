@@ -90,6 +90,7 @@ class AbyssCombatTests(unittest.TestCase):
             ("时序之律者", "abyss_bianli"),
             ("次生银翼", "abyss_world"),
             ("爱愿妖精", "abyss_cup"),
+            ("窈窕谍影", "abyss_wheel"),
         ):
             profile = CHARACTER_PROFILES[role]["variants"][variant]
             self.assertEqual(profile.get("mode"), "abyss")
@@ -169,6 +170,9 @@ class AbyssCombatTests(unittest.TestCase):
 
         role, variant, _ = resolve_captain_profile("夢與幸充盈之愛 3/3 隊長技能 嗨♪愛願妖精♥作為隊長時，啟動天衍之杯")
         self.assertEqual((role, variant), ("爱愿妖精", "abyss_cup"))
+
+        role, variant, _ = resolve_captain_profile("洛絲薇瑟的身分 3/3 隊長技能 窈窕諜影作為隊長時，啟動命運之輪")
+        self.assertEqual((role, variant), ("窈窕谍影", "abyss_wheel"))
 
         role, variant, _ = resolve_captain_profile("未知隊長作為隊長時，啟動命運之輪 3/3")
         self.assertEqual((role, variant), ("通用队伍", "abyss_rotate"))
@@ -269,6 +273,36 @@ class AbyssCombatTests(unittest.TestCase):
         self.assertEqual(ctx.actions, [])
         self.assertNotIn(key, combat.burst_until)
         self.assertNotIn(key, combat.switch_index)
+
+    def test_arena_custom_stop_nodes_and_dynamic_target_node(self):
+        combat = CharacterCombat()
+        ctx = _FakeContext(hit_nodes={"角色战斗-生命HUD", "记忆战场-出击模式-战斗结束-胜利"})
+        argv = types.SimpleNamespace(
+            custom_action_param=json.dumps({
+                "character": "窈窕谍影",
+                "variant": "abyss_wheel",
+                "confirmed_signet": "",
+                "stop_nodes": [
+                    "记忆战场-出击模式-死人了退出任务",
+                    "记忆战场-出击模式-战斗结束-胜利",
+                    "记忆战场-出击模式-战斗结束-失败",
+                ],
+            }),
+            task_detail=types.SimpleNamespace(task_id=21),
+        )
+        self.assertTrue(combat._run(ctx, argv))
+        self.assertEqual(ctx.actions, [])
+
+        from agent.custom.action.AbyssTeamSelect import AbyssTeamSelect
+
+        params = AbyssTeamSelect._parse_params(types.SimpleNamespace(
+            custom_action_param=json.dumps({
+                "target_node": "记忆战场战斗-推荐队伍动态",
+                "stop_nodes": ["记忆战场-出击模式-战斗结束-胜利"],
+            })
+        ))
+        self.assertEqual(params["target_node"], "记忆战场战斗-推荐队伍动态")
+        self.assertEqual(params["stop_nodes"], ["记忆战场-出击模式-战斗结束-胜利"])
 
 
 if __name__ == "__main__":

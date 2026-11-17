@@ -1,0 +1,306 @@
+{
+    "记忆战场战斗-推荐队伍动态": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "通用队伍",
+                    "variant": "abyss_rotate",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-推荐队伍动态",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    },
+    "记忆战场战斗-深渊通用单C站场": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "通用角色",
+                    "variant": "abyss_carry",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-深渊通用单C站场",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    },
+    "记忆战场战斗-深渊通用队伍轮切": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "通用队伍",
+                    "variant": "abyss_rotate",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-深渊通用队伍轮切",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    },
+    "记忆战场战斗-深渊窈窕谍影": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "窈窕谍影",
+                    "variant": "abyss_wheel",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-深渊窈窕谍影",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    },
+    "记忆战场战斗-深渊真我大招流": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "真我·人之律者",
+                    "variant": "abyss_czcx",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-深渊真我大招流",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    },
+    "记忆战场战斗-深渊时序轮切": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "时序之律者",
+                    "variant": "abyss_bianli",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-深渊时序轮切",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    },
+    "记忆战场战斗-深渊次生银翼": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "次生银翼",
+                    "variant": "abyss_world",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-深渊次生银翼",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    },
+    "记忆战场战斗-深渊爱愿妖精": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "爱愿妖精",
+                    "variant": "abyss_cup",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15,
+                    "stop_nodes": [
+                        "记忆战场-出击模式-死人了退出任务",
+                        "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+                        "记忆战场-出击模式-战斗结束-失败"
+                    ]
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "记忆战场-出击模式-死人了退出任务",
+            "记忆战场-出击模式-战斗结束-得分界面",
+                        "记忆战场-出击模式-战斗结束-胜利",
+            "记忆战场-出击模式-战斗结束-失败",
+            "记忆战场战斗-深渊爱愿妖精",
+            "[JumpBack]记忆战场-出击模式-暂停中",
+            "[JumpBack]处于花火大招中",
+            "记忆战场-出击模式-已进入战斗"
+        ]
+    }
+}

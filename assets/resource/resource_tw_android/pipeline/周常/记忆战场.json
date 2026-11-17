@@ -1,0 +1,12 @@
+{
+    "记忆战场-出击模式-角色死亡-正处于战斗界面点击ESC": {
+        "roi": [0, 54, 83, 150],
+        "recognition": "TemplateMatch",
+        "green_mask": true,
+        "template": ["周常/记忆战场/出击模式/记忆战场-战中.png"],
+        "action": "Click",
+        "target": [43, 36, 1, 1],
+        "post_delay": 500,
+        "pre_delay": 500
+    }
+}

@@ -90,9 +90,9 @@ class CharacterCombat(CustomAction):
         return False
 
     @staticmethod
-    def _stop_popup_hit(context, image, profile):
+    def _stop_popup_hit(context, image, profile, stop_nodes=None):
         """检查是否已弹出结算或复活确认等需要立刻停手的界面。"""
-        nodes = profile.get("stop_nodes")
+        nodes = stop_nodes if stop_nodes is not None else profile.get("stop_nodes")
         if nodes is None and profile.get("mode") == "abyss":
             nodes = ABYSS_STOP_NODES
         for node in nodes or ():
@@ -165,9 +165,9 @@ class CharacterCombat(CustomAction):
         self.last_image.pop(key, None)
         self.hud_missing_since.pop(key, None)
 
-    def _check_combat_state(self, context, image, profile, key=None):
+    def _check_combat_state(self, context, image, profile, key=None, stop_nodes=None):
         """统一检查仍在战斗、战后禁用或深渊弹窗：'continue' / 'ended' / 'stop'。"""
-        if self._stop_popup_hit(context, image, profile):
+        if self._stop_popup_hit(context, image, profile, stop_nodes=stop_nodes):
             print("CharacterCombat: stop popup/settlement detected, stopping", flush=True)
             self._drop_hold(context)
             if key is not None:
@@ -228,14 +228,27 @@ class CharacterCombat(CustomAction):
             print("CharacterCombat: 角色/变体/核心刻印未确认，停止输入", flush=True)
             return False
         key = (argv.task_detail.task_id, role, variant)
+        stop_nodes = params.get("stop_nodes")
+        if isinstance(stop_nodes, str):
+            stop_nodes = [stop_nodes]
+        elif not isinstance(stop_nodes, (list, tuple)):
+            stop_nodes = None
         cycles = max(1, int(params.get("cycles_per_run") or profile.get("cycles_per_run") or 1))
         for idx in range(cycles):
-            status = self._run_cycle(context, role, variant, profile, key, force_check=(idx == 0))
+            status = self._run_cycle(
+                context,
+                role,
+                variant,
+                profile,
+                key,
+                force_check=(idx == 0),
+                stop_nodes=stop_nodes,
+            )
             if status != "continue":
                 return status == "ended"
         return True
 
-    def _run_cycle(self, context, role, variant, profile, key, force_check=True):
+    def _run_cycle(self, context, role, variant, profile, key, force_check=True, stop_nodes=None):
         """执行单轮战斗连招；按 state_check_interval_s 节流截屏检状态，避免频繁暂停打断出招。"""
         if context.tasker.stopping:
             return "error"
@@ -253,7 +266,7 @@ class CharacterCombat(CustomAction):
         )
         if need_check:
             image = context.tasker.controller.post_screencap().wait().get()
-            state = self._check_combat_state(context, image, profile, key)
+            state = self._check_combat_state(context, image, profile, key, stop_nodes=stop_nodes)
             if state != "continue":
                 return state
             now = time.monotonic()
@@ -374,7 +387,7 @@ class CharacterCombat(CustomAction):
             if not desktop and time.monotonic() - last_check_at >= state_check_interval_s:
                 # 安卓端按节流间隔复检战斗状态：深渊拉长至每 3.0s 一次，避免打断持续出招节奏。
                 image = context.tasker.controller.post_screencap().wait().get()
-                state = self._check_combat_state(context, image, profile, key)
+                state = self._check_combat_state(context, image, profile, key, stop_nodes=stop_nodes)
                 if state != "continue":
                     return state
                 last_check_at = time.monotonic()

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import time
 import numpy as np
@@ -150,9 +151,22 @@ class AbyssTeamSelect(CustomAction):
         )
         time.sleep(wait_s)
 
+    @staticmethod
+    def _parse_params(argv) -> dict:
+        raw_params = getattr(argv, "custom_action_param", None)
+        if isinstance(raw_params, str):
+            try:
+                params = json.loads(raw_params or "{}")
+            except json.JSONDecodeError:
+                params = {}
+        else:
+            params = raw_params or {}
+        return params if isinstance(params, dict) else {}
+
     def run(self, context, argv):
         try:
-            return self._run(context)
+            params = self._parse_params(argv)
+            return self._run(context, params)
         except Exception as exc:
             print(f"AbyssTeamSelect error: {type(exc).__name__}: {exc}", flush=True)
             return False
@@ -162,7 +176,10 @@ class AbyssTeamSelect(CustomAction):
         text = normalize(" ".join(i["text"] for i in dialog_items))
         return any(marker in text for marker in DIALOG_MARKERS)
 
-    def _run(self, context):
+    def _run(self, context, params=None):
+        params = params or {}
+        target_node = params.get("target_node") or TARGET_DYNAMIC_NODE
+        stop_nodes = params.get("stop_nodes")
         controller = context.tasker.controller
         image = controller.post_screencap().wait().get()
 
@@ -213,18 +230,22 @@ class AbyssTeamSelect(CustomAction):
         role, variant, reason = resolve_captain_profile(captain_text)
         print(f"AbyssTeamSelect: 队长识别 -> {role}/{variant}（{reason}）", flush=True)
 
+        action_param = {
+            "character": role,
+            "variant": variant,
+            "confirmed_signet": "",
+            "cycles_per_run": 15,
+        }
+        if isinstance(stop_nodes, (list, tuple)) and stop_nodes:
+            action_param["stop_nodes"] = list(stop_nodes)
+
         context.override_pipeline({
-            TARGET_DYNAMIC_NODE: {
+            target_node: {
                 "action": {
                     "type": "Custom",
                     "param": {
                         "custom_action": "CharacterCombat",
-                        "custom_action_param": {
-                            "character": role,
-                            "variant": variant,
-                            "confirmed_signet": "",
-                            "cycles_per_run": 15,
-                        },
+                        "custom_action_param": action_param,
                     },
                 }
             }

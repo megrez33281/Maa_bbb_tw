@@ -207,5 +207,34 @@
             "[JumpBack]处于花火大招中",
             "超弦空间-已进入战斗"
         ]
+    },
+    "超限空间战斗-深渊窈窕谍影": {
+        "recognition": "OCR",
+        "roi": [296, 620, 165, 42],
+        "expected": ["[1-9][0-9]*/[1-9][0-9]*"],
+        "only_rec": true,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "CharacterCombat",
+                "custom_action_param": {
+                    "character": "窈窕谍影",
+                    "variant": "abyss_wheel",
+                    "confirmed_signet": "",
+                    "cycles_per_run": 15
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 100,
+        "timeout": 3000,
+        "next": [
+            "超弦空间-死人了退出任务",
+            "超弦空间-战斗结束-胜利",
+            "超限空间战斗-深渊窈窕谍影",
+            "[JumpBack]处于花火大招中",
+            "超弦空间-已进入战斗"
+        ]
     }
 }
