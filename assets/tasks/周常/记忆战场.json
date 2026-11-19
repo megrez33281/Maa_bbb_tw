@@ -18,7 +18,7 @@
     "option": {
         "记忆战场-尝试打最后一层": {
             "label": "出击模式",
-            "description": "开启后将在减负完成后尝试讨伐积分怪，目前只打积分怪",
+            "description": "开启后将在减负完成后尝试讨伐首领，可选只打第一只怪或三只怪依次出击",
             "default_case": "No",
             "type": "switch",
             "cases": [
@@ -30,6 +30,7 @@
                         }
                     },
                     "option": [
+                        "记忆战场-出击目标",
                         "记忆战场-增益模式开关",
                         "记忆战场-编队",
                         "记忆战场-战斗逻辑"
@@ -39,6 +40,48 @@
                     "name": "No",
                     "pipeline_override": {
                         "记忆战场-讨伐模式-第一只怪": {
+                            "enabled": false
+                        },
+                        "记忆战场-讨伐模式-第二只怪": {
+                            "enabled": false
+                        },
+                        "记忆战场-讨伐模式-第三只怪": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ]
+        },
+        "记忆战场-出击目标": {
+            "type": "select",
+            "label": "出击目标",
+            "description": "选择减负后出击打一只怪还是三只怪依次出击",
+            "default_case": "三只怪依次出击",
+            "cases": [
+                {
+                    "name": "三只怪依次出击",
+                    "pipeline_override": {
+                        "记忆战场-讨伐模式-第一只怪": {
+                            "enabled": true
+                        },
+                        "记忆战场-讨伐模式-第二只怪": {
+                            "enabled": true
+                        },
+                        "记忆战场-讨伐模式-第三只怪": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "只打第一只怪",
+                    "pipeline_override": {
+                        "记忆战场-讨伐模式-第一只怪": {
+                            "enabled": true
+                        },
+                        "记忆战场-讨伐模式-第二只怪": {
+                            "enabled": false
+                        },
+                        "记忆战场-讨伐模式-第三只怪": {
                             "enabled": false
                         }
                     }

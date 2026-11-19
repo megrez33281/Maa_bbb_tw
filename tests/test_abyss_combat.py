@@ -304,6 +304,44 @@ class AbyssCombatTests(unittest.TestCase):
         self.assertEqual(params["target_node"], "记忆战场战斗-推荐队伍动态")
         self.assertEqual(params["stop_nodes"], ["记忆战场-出击模式-战斗结束-胜利"])
 
+    def test_arena_pipeline_fixes_and_three_boss_routing(self):
+        from pathlib import Path
+        import jsonc
+
+        root = Path(__file__).resolve().parents[1]
+        sortie = jsonc.loads((root / "assets/resource/base/pipeline/周常/记忆战场_出击.json").read_text(encoding="utf-8"))
+        combat_cfg = jsonc.loads((root / "assets/resource/base/pipeline/周常/记忆战场-战斗逻辑/记忆战场角色战斗配置.json").read_text(encoding="utf-8"))
+        tw_compat = jsonc.loads((root / "assets/resource/resource_tw/pipeline/繁中兼容.json").read_text(encoding="utf-8"))
+        task_cfg = jsonc.loads((root / "assets/tasks/周常/记忆战场.json").read_text(encoding="utf-8"))
+
+        # 1) 開戰與鎖定確認延遲與 next 順序，避免彈窗淡入前重複點開戰把彈窗關掉
+        enter_node = sortie["记忆战场-出击模式-点击正式进入战斗"]
+        self.assertGreaterEqual(enter_node["post_delay"], 1200)
+        self.assertLess(
+            enter_node["next"].index("记忆战场-出击模式-已进入战斗"),
+            enter_node["next"].index("记忆战场-出击模式-点击正式进入战斗"),
+        )
+        self.assertGreaterEqual(sortie["记忆战场-出击模式-装备锁定提示-确认"]["post_delay"], 1500)
+        self.assertGreaterEqual(tw_compat["记忆战场-出击模式-点击正式进入战斗"]["post_delay"], 1200)
+        self.assertGreaterEqual(tw_compat["记忆战场-出击模式-装备锁定提示-确认"]["post_delay"], 1500)
+
+        # 2) SS 首領沒有「增益模式」，切換編隊改認「預設隊伍」
+        team_switch = sortie["记忆战场-出击模式-切换编队流程"]["recognition"]["param"]
+        self.assertIn("预设队伍", team_switch["expected"])
+        self.assertIn("預設隊伍", team_switch["expected"])
+
+        # 3) 所有記憶戰場戰鬥模組超時放寬至 >= 15000ms，避免大招動畫誤判超時
+        for node_name, node in combat_cfg.items():
+            self.assertGreaterEqual(node["timeout"], 15000, node_name)
+
+        # 4) 三隻首領依序出擊路由與任務選項
+        for boss_node in ("记忆战场-讨伐模式-第一只怪", "记忆战场-讨伐模式-第二只怪", "记忆战场-讨伐模式-第三只怪"):
+            self.assertEqual(sortie[boss_node]["max_hit"], 1)
+        hub_next = sortie["记忆战场-出击模式-返回战场主页"]["next"]
+        self.assertIn("记忆战场-讨伐模式-第二只怪", hub_next)
+        self.assertIn("记忆战场-讨伐模式-第三只怪", hub_next)
+        self.assertIn("记忆战场-出击目标", task_cfg["option"])
+
 
 if __name__ == "__main__":
     unittest.main()
